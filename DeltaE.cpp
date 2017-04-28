@@ -193,7 +193,7 @@ double cal_R_C(double C_macron_prime){
 }
 
 double cal_delta_theta(double H_macron_prime){
-    return ( M_PI / 6 ) * exp( -1 * pow( ( H_macron_prime - ( 55 * M_PI / 36 ) ) / 25, 2.0 ) );
+    return ( M_PI / 6 ) * exp( -1 * pow( ( H_macron_prime - ( 55 * M_PI / 36 ) ) / ( 5 * M_PI / 36 ), 2.0 ) );
 }
 
 double cal_R_T(double R_C, double delta_theta){
