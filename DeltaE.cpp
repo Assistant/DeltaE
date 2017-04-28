@@ -68,12 +68,14 @@ double cal_deltaE_H_group(double deltaH_prime, double K_H, double S_H);         
 double deltaE;                                                                     //
 double cal_deltaE(double L_group, double C_group, double H_group, double R_T);     // Final build function
 
+double run_deltaE(double L_1, double a_1, double b_1, double L_2, double a_2, double b_2);
+
 int main (int argc, char* argv[]){
     if (argc != 7){
         printf("usage: %s L_1 a_1 b_1 L_2 a_2 b_2.\n", argv[0]);
         return 1;
     }
-    double L_1, L_2, a_1, a_2, b_1, b_2, d_E;
+    double L_1, L_2, a_1, a_2, b_1, b_2;
     L_1 = atof(argv[1]);
     a_1 = atof(argv[2]);
     b_1 = atof(argv[3]);
@@ -85,40 +87,7 @@ int main (int argc, char* argv[]){
     K_C = 1.0;
     K_H = 1.0;
 
-    deltaL_prime = cal_deltaL_prime( L_1, L_2 );
-    L_macron_prime = cal_L_macron_prime( L_1, L_2);
-    S_L = cal_S_L( L_macron_prime);
-
-    C_1 = cal_C( a_1, b_1 );
-    C_2 = cal_C( a_2, b_2 );
-    C_macron = cal_C_macron( C_1, C_2 );
-    G = cal_G( C_macron );
-    a_1_prime = cal_a_prime( a_1, G );
-    a_2_prime = cal_a_prime( a_2, G );
-    C_1_prime = cal_C_prime( a_1_prime, b_1 );
-    C_2_prime = cal_C_prime( a_2_prime, b_2 );
-    deltaC_prime = cal_deltaC_prime( C_1_prime, C_2_prime );
-    C_macron_prime = cal_C_macron_prime( C_1_prime, C_2_prime );
-    S_C = cal_S_C( C_macron_prime );
-
-    h_1_prime = cal_h_prime( a_1_prime, b_1 );
-    h_2_prime = cal_h_prime( a_2_prime, b_2 );
-    delta_h_prime = cal_delta_h_prime( h_1_prime, h_2_prime );
-    H_macron_prime = cal_H_macron_prime( h_1_prime, h_2_prime );
-    deltaH_prime = cal_deltaH_prime( C_1_prime, C_2_prime, delta_h_prime );
-    T = cal_T( H_macron_prime );
-    S_H = cal_S_H( C_macron_prime, T );
-    R_C = cal_R_C( C_macron_prime );
-    delta_theta = cal_delta_theta( H_macron_prime );
-    R_T = cal_R_T( R_C, delta_theta );
-
-    deltaE_L_group = cal_deltaE_L_group( deltaL_prime, K_L, S_L );
-    deltaE_C_group = cal_deltaE_C_group( deltaC_prime, K_C, S_C );
-    deltaE_H_group = cal_deltaE_H_group( deltaH_prime, K_H, S_H );
-
-    deltaE = cal_deltaE( deltaE_L_group, deltaE_C_group, deltaE_H_group, R_T);
-
-    printf("The delta E is: %f \n", deltaE);
+    run_deltaE( L_1, a_1, b_1, L_2, a_2, b_2 );
 
 }
 
@@ -238,4 +207,43 @@ double cal_deltaE_H_group(double deltaH_prime, double K_H, double S_H){
 
 double cal_deltaE(double L_group, double C_group, double H_group, double R_T){
     return sqrt( pow( L_group, 2 ) + pow( C_group, 2 ) + pow( H_group, 2 ) + R_T * C_group * H_group );
+}
+
+double run_deltaE(double L_1, double a_1, double b_1, double L_2, double a_2, double b_2){
+    deltaL_prime = cal_deltaL_prime( L_1, L_2 );
+    L_macron_prime = cal_L_macron_prime( L_1, L_2);
+    S_L = cal_S_L( L_macron_prime);
+
+    C_1 = cal_C( a_1, b_1 );
+    C_2 = cal_C( a_2, b_2 );
+    C_macron = cal_C_macron( C_1, C_2 );
+    G = cal_G( C_macron );
+    a_1_prime = cal_a_prime( a_1, G );
+    a_2_prime = cal_a_prime( a_2, G );
+    C_1_prime = cal_C_prime( a_1_prime, b_1 );
+    C_2_prime = cal_C_prime( a_2_prime, b_2 );
+    deltaC_prime = cal_deltaC_prime( C_1_prime, C_2_prime );
+    C_macron_prime = cal_C_macron_prime( C_1_prime, C_2_prime );
+    S_C = cal_S_C( C_macron_prime );
+
+    h_1_prime = cal_h_prime( a_1_prime, b_1 );
+    h_2_prime = cal_h_prime( a_2_prime, b_2 );
+    delta_h_prime = cal_delta_h_prime( h_1_prime, h_2_prime );
+    H_macron_prime = cal_H_macron_prime( h_1_prime, h_2_prime );
+    deltaH_prime = cal_deltaH_prime( C_1_prime, C_2_prime, delta_h_prime );
+    T = cal_T( H_macron_prime );
+    S_H = cal_S_H( C_macron_prime, T );
+    R_C = cal_R_C( C_macron_prime );
+    delta_theta = cal_delta_theta( H_macron_prime );
+    R_T = cal_R_T( R_C, delta_theta );
+
+    deltaE_L_group = cal_deltaE_L_group( deltaL_prime, K_L, S_L );
+    deltaE_C_group = cal_deltaE_C_group( deltaC_prime, K_C, S_C );
+    deltaE_H_group = cal_deltaE_H_group( deltaH_prime, K_H, S_H );
+
+    deltaE = cal_deltaE( deltaE_L_group, deltaE_C_group, deltaE_H_group, R_T);
+
+    printf("The delta E is: %f \n", deltaE);
+    
+    return deltaE;
 }
