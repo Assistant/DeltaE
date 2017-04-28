@@ -96,7 +96,7 @@ double cal_deltaL_prime(double L_1, double L_2){
 }
 
 double cal_L_macron_prime(double L_1, double L_2){
-    return ( L_1 + L_2 ) / 2;
+    return ( L_1 + L_2 ) / 2.0;
 }
 
 double cal_S_L(double L_macron_prime){
@@ -105,11 +105,11 @@ double cal_S_L(double L_macron_prime){
 }
 
 double cal_C(double a, double b){
-    return sqrt( pow( a, 2 ) + pow( b, 2 ) );
+    return sqrt( a * a + b * b );
 }
 
 double cal_C_macron(double C_1, double C_2){
-    return ( C_1 + C_2 ) / 2;
+    return ( C_1 + C_2 ) / 2.0;
 }
 
 double cal_G(double C_macron){
@@ -118,11 +118,11 @@ double cal_G(double C_macron){
 }
 
 double cal_a_prime(double a, double G){
-    return a * ( 1 + G );
+    return a * ( 1.0 + G );
 }
 
 double cal_C_prime(double a_prime, double b){
-    return sqrt( pow( a_prime, 2 ) + pow( b, 2 ) );
+    return sqrt( a_prime * a_prime +  b * b );
 }
 
 double cal_deltaC_prime(double C_1_prime, double C_2_prime){
@@ -130,7 +130,7 @@ double cal_deltaC_prime(double C_1_prime, double C_2_prime){
 }
 
 double cal_C_macron_prime(double C_1_prime, double C_2_prime){
-    return ( C_1_prime + C_2_prime ) / 2;
+    return ( C_1_prime + C_2_prime ) / 2.0;
 }
 
 double cal_S_C(double C_macron_prime){
@@ -139,8 +139,13 @@ double cal_S_C(double C_macron_prime){
 
 
 double cal_h_prime(double a_prime, double b){
-    return atan2( b, a_prime );
-    
+    double value;
+    value = atan2( b, a_prime );
+    if ( value >= 0 ){
+        return value;
+    } else {
+        return value + 2.0 * M_PI;
+    }
 }
 
 double cal_delta_h_prime(double h_1_prime, double h_2_prime){
@@ -149,24 +154,26 @@ double cal_delta_h_prime(double h_1_prime, double h_2_prime){
     if ( fabs( value ) <= M_PI ) {
         return value;
     } else if ( ( fabs ( value ) > M_PI ) && ( h_2_prime <= h_1_prime ) ) {
-        return value + 2 * M_PI;
+        return value + 2.0 * M_PI;
     } else {
-        return value - 2 * M_PI;
+        return value - 2.0 * M_PI;
     }
 }
 
 double cal_H_macron_prime(double h_1_prime, double h_2_prime){
     double value;
-    value = ( h_1_prime + h_2_prime ) / 2;
-    if( fabs ( h_1_prime - h_2_prime ) > M_PI ){
-        return value + M_PI;
+    value =  h_1_prime + h_2_prime;
+    if( fabs ( h_1_prime - h_2_prime ) <= M_PI ){
+        return value / 2.0;
+    } else if ( value < 2 * M_PI ){
+        return ( value / 2 ) + M_PI ;
     } else {
-        return value;
+        return ( value / 2 ) - M_PI ;
     }
 }
 
 double cal_deltaH_prime(double C_1_prime, double C_2_prime, double delta_h_prime){
-    return 2 * sqrt( C_1_prime * C_2_prime ) * sin( delta_h_prime / 2 );
+    return 2.0 * sqrt( C_1_prime * C_2_prime ) * sin( delta_h_prime / 2.0 );
 }
 
 double cal_T(double H_macron_prime){
@@ -181,16 +188,16 @@ double cal_S_H(double C_macron_prime, double T){
 }
 
 double cal_R_C(double C_macron_prime){
-    return 2 * sqrt( pow( C_macron_prime, 7 ) / \
+    return 2.0 * sqrt( pow( C_macron_prime, 7 ) / \
         ( pow( C_macron_prime, 7 ) + pow( 25, 7 ) ) );
 }
 
 double cal_delta_theta(double H_macron_prime){
-    return pow( 30, -1 * pow( ( H_macron_prime - ( 55 * M_PI / 36 ) ) / 25, 2 ) );
+    return ( M_PI / 6 ) * exp( -1 * pow( ( H_macron_prime - ( 55 * M_PI / 36 ) ) / 25, 2.0 ) );
 }
 
 double cal_R_T(double R_C, double delta_theta){
-    return -1 * R_C * sin( 2 * delta_theta );
+    return -1 * R_C * sin( 2.0 * delta_theta );
 }
 
 double cal_deltaE_L_group(double deltaL_prime, double K_L, double S_L){
@@ -206,7 +213,7 @@ double cal_deltaE_H_group(double deltaH_prime, double K_H, double S_H){
 }
 
 double cal_deltaE(double L_group, double C_group, double H_group, double R_T){
-    return sqrt( pow( L_group, 2 ) + pow( C_group, 2 ) + pow( H_group, 2 ) + R_T * C_group * H_group );
+    return sqrt( pow( L_group, 2.0 ) + pow( C_group, 2.0 ) + pow( H_group, 2.0 ) + R_T * C_group * H_group );
 }
 
 double run_deltaE(double L_1, double a_1, double b_1, double L_2, double a_2, double b_2){
@@ -242,7 +249,7 @@ double run_deltaE(double L_1, double a_1, double b_1, double L_2, double a_2, do
     deltaE_H_group = cal_deltaE_H_group( deltaH_prime, K_H, S_H );
 
     deltaE = cal_deltaE( deltaE_L_group, deltaE_C_group, deltaE_H_group, R_T);
-
+    
     printf("The delta E is: %f \n", deltaE);
     
     return deltaE;
